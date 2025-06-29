@@ -40,11 +40,10 @@ async function callHuggingFace(prompt: string) {
     },
     body: JSON.stringify({
       inputs: prompt,
-      parameters: { max_new_tokens: 1500, temperature: 0.7 }, // Falcon needs temperature for better reasoning
+      parameters: { max_new_tokens: 800, temperature: 0.7 },
     }),
   })
 
-  // ✅ Proper status code check
   if (!response.ok) {
     const errorText = await response.text()
     console.error("Hugging Face API Error:", errorText)
@@ -53,10 +52,18 @@ async function callHuggingFace(prompt: string) {
 
   const result = await response.json()
 
-  // ✅ Supports both response formats
-  const generatedText = result?.generated_text || result?.[0]?.generated_text
+  let generatedText = null
 
-  if (!generatedText) throw new Error("No response from Hugging Face")
+  if (Array.isArray(result) && result[0]?.generated_text) {
+    generatedText = result[0].generated_text
+  } else if (typeof result?.generated_text === "string") {
+    generatedText = result.generated_text
+  }
+
+  if (!generatedText) {
+    console.error("Unexpected response format:", result)
+    throw new Error("Unexpected response format from Hugging Face API")
+  }
 
   return generatedText
 }
@@ -64,6 +71,16 @@ async function callHuggingFace(prompt: string) {
 export async function POST(request: Request) {
   try {
     const { clients, workers, tasks } = await request.json()
+
+    // ✅ Approximate input size safeguard
+    const approxPromptSize =
+      JSON.stringify(clients.slice(0, 5)).length +
+      JSON.stringify(workers.slice(0, 5)).length +
+      JSON.stringify(tasks.slice(0, 5)).length
+
+    if (approxPromptSize > 3000) {
+      return Response.json({ error: "Input dataset too large for Falcon to process. Please reduce dataset size." }, { status: 400 })
+    }
 
     const prompt = `
       You are an expert resource allocation analyst. Perform comprehensive validation on this dataset:
@@ -93,7 +110,7 @@ export async function POST(request: Request) {
       - Capacity planning suggestions
       - Skill gap analysis
 
-      Format your response strictly as this JSON:
+      Return JSON in this strict format:
       {
         "errors": [
           {

@@ -101,15 +101,19 @@ export default function AIInsightsDashboard() {
     }
 
     // Co-run Opportunities
-    const tasksBySkills = tasks.reduce(
-      (acc, task) => {
-        const skillKey = task.RequiredSkills.sort().join(",")
-        if (!acc[skillKey]) acc[skillKey] = []
-        acc[skillKey].push(task.TaskID)
-        return acc
-      },
-      {} as Record<string, string[]>,
-    )
+  const tasksBySkills = tasks.reduce(
+  (acc, task) => {
+    const skillKey = (Array.isArray(task.RequiredSkills) ? task.RequiredSkills : [])
+      .map((skill) => skill.trim())
+      .sort()
+      .join(",")
+    if (!acc[skillKey]) acc[skillKey] = []
+    acc[skillKey].push(task.TaskID)
+    return acc
+  },
+  {} as Record<string, string[]>,
+)
+
 
     const corunOpportunities = Object.entries(tasksBySkills).filter(([_, taskIds]) => taskIds.length > 1)
 

@@ -32,38 +32,39 @@ async function callHuggingFace(prompt: string) {
     },
     body: JSON.stringify({
       inputs: prompt,
-      parameters: { max_new_tokens: 1500, temperature: 0.7 }, // Falcon typically benefits from some creativity
+      parameters: { max_new_tokens: 800, temperature: 0.7 }, // Falcon token size adjusted
     }),
   })
 
   if (!response.ok) {
     const errorText = await response.text()
-    console.error("Hugging Face API Error:", response.status, errorText)
-    throw new Error(`Failed to fetch from Hugging Face API: ${response.status}`)
+    console.error("Hugging Face API error:", response.status, errorText)
+    throw new Error(`Hugging Face API error: ${response.status}`)
   }
 
   const result = await response.json()
 
-  const generatedText = result?.generated_text || result?.[0]?.generated_text
+  let generatedText = null
+  if (Array.isArray(result) && result[0]?.generated_text) {
+    generatedText = result[0].generated_text
+  } else if (typeof result?.generated_text === "string") {
+    generatedText = result.generated_text
+  }
 
-  if (!generatedText) throw new Error("No response from Hugging Face")
+  if (!generatedText) {
+    console.error("Unexpected response format:", result)
+    throw new Error("Unexpected response format from Hugging Face API")
+  }
 
   return generatedText
 }
 
 export async function POST(request: Request) {
   try {
-    const { clients, workers, tasks, currentWeights, constraints } = await request.json()
+    const { clients, workers, tasks, currentWeights } = await request.json()
 
-    const truncatedWeights = Object.fromEntries(
-      Object.entries(currentWeights).slice(0, 5)
-    )
+    const truncatedWeights = Object.fromEntries(Object.entries(currentWeights).slice(0, 5))
     const weightsSummary = Object.keys(currentWeights).slice(0, 5).join(", ") + (Object.keys(currentWeights).length > 5 ? " and more..." : "")
-
-    const approxPromptLength = JSON.stringify(truncatedWeights).length + clients.length * 10 + workers.length * 10 + tasks.length * 10
-    if (approxPromptLength > 4000) {
-      return Response.json({ error: "Dataset too large for processing. Please reduce the dataset size." }, { status: 400 })
-    }
 
     const prompt = `
       You are an expert resource allocation strategist. Generate 3-4 distinct scenarios for resource allocation based on this data:
@@ -79,19 +80,18 @@ export async function POST(request: Request) {
       1. Create a unique strategic approach (efficiency-first, balanced, client-focused, innovation-driven, etc.)
       2. Adjust priority weights to reflect the strategy
       3. Predict realistic outcomes (0-100 scale) for:
-         - Efficiency (task completion rate)
-         - Satisfaction (client happiness)
-         - Workload (worker utilization balance)
-         - Cost (resource cost efficiency)
-         - Timeline (delivery speed)
-      4. Provide 3-4 specific AI insights about what this scenario achieves
+         - Efficiency
+         - Satisfaction
+         - Workload
+         - Cost
+         - Timeline
+      4. Provide 3-4 specific AI insights
       5. Identify 2-3 key risk factors
-      6. Rate confidence level (0-1) in predictions
+      6. Rate confidence level (0-1)
 
-      Make scenarios distinctly different with clear trade-offs. Include quantitative insights where possible.
-      Focus on actionable business intelligence that helps decision-making.
+      Make scenarios distinctly different with clear trade-offs. Focus on actionable insights.
 
-      Return a JSON object strictly matching this schema:
+      Return JSON in this exact format:
       {
         "scenarios": [
           {

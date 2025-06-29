@@ -27,7 +27,7 @@ async function callHuggingFace(prompt: string) {
     },
     body: JSON.stringify({
       inputs: prompt,
-      parameters: { max_new_tokens: 1500, temperature: 0.7 }, // Falcon needs temperature for better reasoning
+      parameters: { max_new_tokens: 800, temperature: 0.7 }, // ✅ Falcon safe range
     }),
   })
 
@@ -39,10 +39,18 @@ async function callHuggingFace(prompt: string) {
 
   const result = await response.json()
 
-  // Supports both response structures
-  const generatedText = result?.generated_text || result?.[0]?.generated_text
+  // ✅ Support Falcon’s array response
+  let generatedText = null
+  if (Array.isArray(result) && result[0]?.generated_text) {
+    generatedText = result[0].generated_text
+  } else if (typeof result?.generated_text === "string") {
+    generatedText = result.generated_text
+  }
 
-  if (!generatedText) throw new Error("No response from Hugging Face")
+  if (!generatedText) {
+    console.error("Unexpected response format:", result)
+    throw new Error("No response from Hugging Face")
+  }
 
   return generatedText
 }
@@ -65,13 +73,19 @@ export async function POST(request: Request) {
       tasks: ["TaskID", "TaskName", "Category", "Duration", "RequiredSkills", "PreferredPhases", "MaxConcurrent"],
     }
 
+    // ✅ Prompt size safeguard
+    const approxPromptSize = JSON.stringify(headers).length + JSON.stringify(sampleData.slice(0, 3)).length
+    if (approxPromptSize > 3000) {
+      return Response.json({ error: "Input dataset too large for Falcon to process. Please reduce dataset size." }, { status: 400 })
+    }
+
     const prompt = `
       You are an expert data analyst. I have uploaded a ${entityType} dataset with these column headers: ${headers.join(", ")}
-      
+
       Expected columns for ${entityType}: ${expectedColumns[entityType as keyof typeof expectedColumns].join(", ")}
-      
+
       Sample data (first 3 rows): ${JSON.stringify(sampleData.slice(0, 3))}
-      
+
       Please:
       1. Map the uploaded columns to the expected schema columns
       2. Provide confidence scores (0-1) for each mapping
@@ -90,7 +104,7 @@ export async function POST(request: Request) {
         ],
         "suggestions": [
           {
-            "type": "missing_data",
+            "type": "missing_data" | "data_quality" | "normalization",
             "message": "",
             "field": ""
           }

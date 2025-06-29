@@ -26,21 +26,29 @@ async function callHuggingFace(prompt: string) {
     },
     body: JSON.stringify({
       inputs: prompt,
-      parameters: { max_new_tokens: 1500, temperature: 0.7 }, // Falcon needs temperature for better reasoning
+      parameters: { max_new_tokens: 800, temperature: 0.7 },
     }),
   })
 
   if (!response.ok) {
     const errorText = await response.text()
-    console.error("Hugging Face API Error:", response.status, errorText)
-    throw new Error(`Failed to fetch from Hugging Face API: ${response.status}`)
+    console.error("Hugging Face API error:", response.status, errorText)
+    throw new Error(`Hugging Face API error: ${response.status}`)
   }
 
   const result = await response.json()
 
-  const generatedText = result?.generated_text || result?.[0]?.generated_text
+  let generatedText = null
+  if (Array.isArray(result) && result[0]?.generated_text) {
+    generatedText = result[0].generated_text
+  } else if (typeof result?.generated_text === "string") {
+    generatedText = result.generated_text
+  }
 
-  if (!generatedText) throw new Error("No response from Hugging Face")
+  if (!generatedText) {
+    console.error("Unexpected response format:", result)
+    throw new Error("Unexpected response format from Hugging Face API")
+  }
 
   return generatedText
 }
@@ -57,28 +65,27 @@ export async function POST(request: Request) {
       Workers: ${JSON.stringify(workers.slice(0, 3))}
       Tasks: ${JSON.stringify(tasks.slice(0, 3))}
 
-      Parse the request and return a JSON object strictly matching this schema:
+      Return JSON in this strict format:
       {
         "modifications": [
           {
             "entity_type": "clients" | "workers" | "tasks",
             "entity_id": "string",
             "field": "string",
-            "current_value": "any",
-            "new_value": "any",
+            "current_value": any,
+            "new_value": any,
             "reasoning": "string",
-            "confidence": "number (0-1)",
-            "safe_to_apply": "boolean"
+            "confidence": number,
+            "safe_to_apply": boolean
           }
         ],
         "summary": "string",
-        "affected_count": "number"
+        "affected_count": number
       }
 
       Notes:
-      - Only suggest modifications if you are highly confident.
-      - Confidence must be > 0.8 to be marked safe.
-      - Be extremely precise.
+      - Only suggest modifications if confidence > 0.8 to be safe.
+      - Be extremely precise and return only valid JSON.
     `
 
     const responseText = await callHuggingFace(prompt)
@@ -100,7 +107,7 @@ export async function POST(request: Request) {
 
     return Response.json(validation.data)
   } catch (error) {
-    console.error("Natural language modification error:", error)
+    console.error("Modification processing error:", error)
     return Response.json({ error: "Failed to process modification request" }, { status: 500 })
   }
 }

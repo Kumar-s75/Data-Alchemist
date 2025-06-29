@@ -23,7 +23,6 @@ const RuleRecommendationSchema = z.object({
   ),
 })
 
-// ✅ Hugging Face API Call
 async function callHuggingFace(prompt: string) {
   const response = await fetch("https://api-inference.huggingface.co/models/tiiuae/falcon-7b-instruct", {
     method: "POST",
@@ -33,7 +32,7 @@ async function callHuggingFace(prompt: string) {
     },
     body: JSON.stringify({
       inputs: prompt,
-      parameters: { max_new_tokens: 1500, temperature: 0.7 }, // Falcon needs temperature for better reasoning
+      parameters: { max_new_tokens: 800, temperature: 0.7 }, // ✅ Falcon recommended token limit
     }),
   })
 
@@ -45,12 +44,21 @@ async function callHuggingFace(prompt: string) {
 
   const result = await response.json()
 
-  if (!Array.isArray(result) || !result[0]?.generated_text) {
+  let generatedText = null
+
+  // ✅ Handle both array and object response formats
+  if (Array.isArray(result) && result[0]?.generated_text) {
+    generatedText = result[0].generated_text
+  } else if (typeof result?.generated_text === "string") {
+    generatedText = result.generated_text
+  }
+
+  if (!generatedText) {
     console.error("Unexpected response format:", result)
     throw new Error("Unexpected response format from Hugging Face API")
   }
 
-  return result[0].generated_text
+  return generatedText
 }
 
 export async function POST(request: Request) {
@@ -91,27 +99,54 @@ export async function POST(request: Request) {
 
       Look for these patterns and suggest rules:
       (Detailed instruction same as before)
-      
+
       Respond ONLY in this JSON format:
-      ${JSON.stringify(RuleRecommendationSchema.shape, null, 2)}
+      {
+        "recommendations": [
+          {
+            "type": "coRun" | "slotRestriction" | "loadLimit" | "phaseWindow" | "patternMatch" | "precedence",
+            "title": "string",
+            "description": "string",
+            "reasoning": "string",
+            "confidence": number,
+            "priority": "high" | "medium" | "low",
+            "parameters": { "paramName": any },
+            "affected_entities": ["string"]
+          }
+        ],
+        "patterns_detected": [
+          {
+            "pattern_type": "string",
+            "description": "string",
+            "entities": ["string"],
+            "frequency": number
+          }
+        ]
+      }
     `
 
     console.log("Prompt size (characters):", prompt.length)
 
-    // 🔄 Hugging Face call
     const responseText = await callHuggingFace(prompt)
 
     console.log("Raw response:", responseText)
 
-    // ✅ Try parsing the response into expected schema
-    const parsed = RuleRecommendationSchema.safeParse(JSON.parse(responseText))
+    let parsed
+    try {
+      parsed = JSON.parse(responseText)
+    } catch (error) {
+      console.error("JSON parsing error", error)
+      return Response.json({ error: "Invalid JSON response from Hugging Face" }, { status: 500 })
+    }
 
-    if (!parsed.success) {
-      console.error("Schema validation failed", parsed.error)
+    const validation = RuleRecommendationSchema.safeParse(parsed)
+
+    if (!validation.success) {
+      console.error("Schema validation failed", validation.error)
       return Response.json({ error: "Response format invalid" }, { status: 500 })
     }
 
-    return Response.json(parsed.data)
+    return Response.json(validation.data)
   } catch (error) {
     console.error("Rule recommendation error:", error)
     return Response.json({ error: "Failed to generate rule recommendations" }, { status: 500 })
