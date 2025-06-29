@@ -29,6 +29,18 @@ export async function POST(request: Request) {
   try {
     const { clients, workers, tasks, currentWeights, constraints } = await request.json()
 
+    // Truncate weights for prompt
+    const truncatedWeights = Object.fromEntries(
+      Object.entries(currentWeights).slice(0, 5)
+    )
+    const weightsSummary = Object.keys(currentWeights).slice(0, 5).join(", ") + (Object.keys(currentWeights).length > 5 ? " and more..." : "")
+
+    // Crude token size check
+    const approxPromptLength = JSON.stringify(truncatedWeights).length + clients.length * 10 + workers.length * 10 + tasks.length * 10
+    if (approxPromptLength > 4000) {
+      return Response.json({ error: "Dataset too large for processing. Please reduce the dataset size." }, { status: 400 })
+    }
+
     const { object } = await generateObject({
       model: groq("llama3-8b-8192"),
       schema: ScenarioSchema,
@@ -40,7 +52,7 @@ export async function POST(request: Request) {
         - Workers: ${workers.length} across ${[...new Set(workers.map((w: any) => w.WorkerGroup))].length} groups
         - Tasks: ${tasks.length} requiring ${[...new Set(tasks.flatMap((t: any) => t.RequiredSkills))].length} unique skills
         
-        Current Weights: ${JSON.stringify(currentWeights)}
+        Current Weights Summary: ${weightsSummary}
         
         For each scenario:
         1. Create a unique strategic approach (efficiency-first, balanced, client-focused, innovation-driven, etc.)

@@ -20,16 +20,22 @@ export async function POST(request: Request) {
   try {
     const { naturalLanguageRule, clients, workers, tasks } = await request.json()
 
+    // Limit prompt size
+    const limitedClients = clients.slice(0, 10).map((c: any) => c.ClientID)
+    const limitedWorkers = workers.slice(0, 10).map((w: any) => w.WorkerID)
+    const workerGroups = [...new Set(workers.slice(0, 20).map((w: any) => w.WorkerGroup))]
+    const limitedTasks = tasks.slice(0, 10).map((t: any) => t.TaskID)
+
     const { object } = await generateObject({
       model: groq("llama3-8b-8192"),
       schema: RuleSchema,
       prompt: `
         Convert this natural language business rule into structured rule configuration: "${naturalLanguageRule}"
         
-        Available entities:
-        - Clients: ${clients.map((c: any) => c.ClientID).join(", ")}
-        - Workers: ${workers.map((w: any) => w.WorkerID).join(", ")} (Groups: ${[...new Set(workers.map((w: any) => w.WorkerGroup))].join(", ")})
-        - Tasks: ${tasks.map((t: any) => t.TaskID).join(", ")}
+        Available entities (sampled):
+        - Clients: ${limitedClients.join(", ")}${clients.length > 10 ? " and more..." : ""}
+        - Workers: ${limitedWorkers.join(", ")}${workers.length > 10 ? " and more..." : ""} (Groups: ${workerGroups.join(", ")})
+        - Tasks: ${limitedTasks.join(", ")}${tasks.length > 10 ? " and more..." : ""}
         
         Rule types available:
         1. coRun: Tasks that must run together { tasks: [TaskID1, TaskID2] }

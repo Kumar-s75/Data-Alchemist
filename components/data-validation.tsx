@@ -9,11 +9,9 @@ import { Progress } from "@/components/ui/progress"
 import { CheckCircle, AlertTriangle, XCircle, RefreshCw, Sparkles, Lightbulb } from "lucide-react"
 import { useData, type ValidationError } from "@/contexts/data-context"
 import AICorrectionPanel from "@/components/ai-correction-panel"
-// Add imports at the top
 import { useComprehensiveValidation } from "@/components/comprehensive-validation"
 import NaturalLanguageModifier from "@/components/natural-language-modifier"
 
-// Update the component to use comprehensive validation
 export default function DataValidation() {
   const { clients, workers, tasks, validationErrors, setValidationErrors } = useData()
   const { runComprehensiveValidation, isValidating: isValidatingComprehensive } = useComprehensiveValidation()
@@ -28,7 +26,6 @@ export default function DataValidation() {
     }>
   >([])
 
-  // Add AI validation function
   const runAIValidation = async () => {
     try {
       const response = await fetch("/api/ai/validate-data", {
@@ -41,13 +38,11 @@ export default function DataValidation() {
 
       const aiValidation = await response.json()
 
-      // Convert AI insights to validation errors
       const aiErrors = aiValidation.errors.map((error: any) => ({
         ...error,
         id: `ai-${error.id}`,
       }))
 
-      // Add AI recommendations as suggestions
       const aiSuggestions = aiValidation.recommendations.map((rec: any) => ({
         id: `ai-rec-${Math.random()}`,
         message: `${rec.title}: ${rec.description}`,
@@ -62,14 +57,12 @@ export default function DataValidation() {
     }
   }
 
-  // Replace the existing runValidation with comprehensive validation
   const runValidation = async () => {
     setIsValidating(true)
     setValidationProgress(0)
     const errors: ValidationError[] = []
     const newSuggestions: any[] = []
 
-    // Simulate validation progress
     const validationSteps = [
       "Checking required fields...",
       "Validating IDs and references...",
@@ -83,7 +76,6 @@ export default function DataValidation() {
       await new Promise((resolve) => setTimeout(resolve, 500))
     }
 
-    // 1. Missing required columns
     clients.forEach((client) => {
       if (!client.ClientID) {
         errors.push({
@@ -107,7 +99,6 @@ export default function DataValidation() {
       }
     })
 
-    // 2. Duplicate IDs
     const clientIds = clients.map((c) => c.ClientID).filter(Boolean)
     const workerIds = workers.map((w) => w.WorkerID).filter(Boolean)
     const taskIds = tasks.map((t) => t.TaskID).filter(Boolean)
@@ -127,7 +118,6 @@ export default function DataValidation() {
       })
     })
 
-    // 3. Out-of-range values
     clients.forEach((client) => {
       if (client.PriorityLevel < 1 || client.PriorityLevel > 5) {
         errors.push({
@@ -156,9 +146,15 @@ export default function DataValidation() {
       }
     })
 
-    // 4. Unknown references
+    // ✅ FIXED SECTION
     clients.forEach((client) => {
-      client.RequestedTaskIDs.forEach((taskId) => {
+      const requestedTaskIds = Array.isArray(client.RequestedTaskIDs)
+        ? client.RequestedTaskIDs
+        : typeof client.RequestedTaskIDs === "string"
+        ? client.RequestedTaskIDs.split(",").map((id) => id.trim()).filter(Boolean)
+        : []
+
+      requestedTaskIds.forEach((taskId) => {
         if (!taskIds.includes(taskId)) {
           errors.push({
             id: `unknown-task-${client.ClientID}-${taskId}`,
@@ -173,9 +169,8 @@ export default function DataValidation() {
       })
     })
 
-    // 5. Skill coverage matrix
-    const allRequiredSkills = [...new Set(tasks.flatMap((task) => task.RequiredSkills))]
-    const allWorkerSkills = [...new Set(workers.flatMap((worker) => worker.Skills))]
+    const allRequiredSkills = [...new Set(tasks.flatMap((task) => task.RequiredSkills))] || []
+    const allWorkerSkills = [...new Set(workers.flatMap((worker) => worker.Skills))] || []
 
     allRequiredSkills.forEach((skill) => {
       if (!allWorkerSkills.includes(skill)) {
@@ -190,7 +185,6 @@ export default function DataValidation() {
       }
     })
 
-    // AI-enhanced suggestions
     if (clients.length > 0 && workers.length > 0) {
       const highPriorityClients = clients.filter((c) => c.PriorityLevel >= 4).length
       const totalWorkers = workers.length
@@ -205,7 +199,6 @@ export default function DataValidation() {
       }
     }
 
-    // Check for potential co-run opportunities
     const tasksBySkills = tasks.reduce(
       (acc, task) => {
         const skillKey = task.RequiredSkills.sort().join(",")
@@ -227,7 +220,6 @@ export default function DataValidation() {
       }
     })
 
-    // Add AI validation step
     setValidationProgress(80)
     await runAIValidation()
 
