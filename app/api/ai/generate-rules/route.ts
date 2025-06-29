@@ -27,7 +27,7 @@ async function callHuggingFace(prompt: string) {
     }),
   })
 
-  // ✅ Handle non-200 responses
+ 
   if (!response.ok) {
     const errorText = await response.text()
     console.error("Hugging Face API Error:", errorText)
@@ -36,7 +36,7 @@ async function callHuggingFace(prompt: string) {
 
   const result = await response.json()
 
-  // ✅ Check both possible Hugging Face response formats
+  
   const generatedText = result?.generated_text || result?.[0]?.generated_text
 
   if (!generatedText) throw new Error("No response from Hugging Face")

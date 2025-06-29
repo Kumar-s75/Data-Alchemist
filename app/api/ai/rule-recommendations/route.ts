@@ -25,7 +25,7 @@ const RuleRecommendationSchema = z.object({
 
 // ✅ Hugging Face API Call
 async function callHuggingFace(prompt: string) {
-  const response = await fetch("https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.2", {
+  const response = await fetch("https://api-inference.huggingface.co/models/tiiuae/falcon-7b-instruct", {
     method: "POST",
     headers: {
       Authorization: `Bearer ${process.env.HUGGINGFACE_API_KEY}`,
@@ -33,7 +33,7 @@ async function callHuggingFace(prompt: string) {
     },
     body: JSON.stringify({
       inputs: prompt,
-      parameters: { max_new_tokens: 1500, temperature: 0.7 },
+      parameters: { max_new_tokens: 1500, temperature: 0.7 }, // Falcon needs temperature for better reasoning
     }),
   })
 

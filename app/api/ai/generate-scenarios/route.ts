@@ -24,7 +24,7 @@ const ScenarioSchema = z.object({
 })
 
 async function callHuggingFace(prompt: string) {
-  const response = await fetch("https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.2", {
+  const response = await fetch("https://api-inference.huggingface.co/models/tiiuae/falcon-7b-instruct", {
     method: "POST",
     headers: {
       Authorization: `Bearer ${process.env.HUGGINGFACE_API_KEY}`,
@@ -32,20 +32,18 @@ async function callHuggingFace(prompt: string) {
     },
     body: JSON.stringify({
       inputs: prompt,
-      parameters: { max_new_tokens: 1500, temperature: 0.0 },
+      parameters: { max_new_tokens: 1500, temperature: 0.7 }, // Falcon typically benefits from some creativity
     }),
   })
 
-  // ✅ Proper error handling for API errors
   if (!response.ok) {
     const errorText = await response.text()
-    console.error("Hugging Face API Error:", errorText)
-    throw new Error("Failed to fetch from Hugging Face API")
+    console.error("Hugging Face API Error:", response.status, errorText)
+    throw new Error(`Failed to fetch from Hugging Face API: ${response.status}`)
   }
 
   const result = await response.json()
 
-  // ✅ Handle both possible response formats
   const generatedText = result?.generated_text || result?.[0]?.generated_text
 
   if (!generatedText) throw new Error("No response from Hugging Face")
