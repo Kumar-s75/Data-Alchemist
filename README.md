@@ -33,4 +33,28 @@ By combining deterministic validation, AI-enhanced reasoning, and intuitive inte
 ---
 
 ## Folder Structure
-
+#### Folder Structure
+Frontend/
+├── lib/
+│   └── database/
+│       ├── prisma.ts          # Database connection
+│       ├── user.service.ts     # User operations
+│       ├── repository.service.ts # Repository operations
+│       ├── branch.service.ts   # Branch operations
+│       ├── language.service.ts # Language operations
+│       ├── utils.ts           # Database utilities
+│       └── index.ts           # Exports
+├── types/
+│   └── database.ts            # TypeScript types
+├── pages/api/
+│   ├── database/
+│   │   └── test.ts           # Database test endpoint
+│   ├── users/
+│   │   ├── index.ts          # User CRUD
+│   │   └── [id].ts           # User by ID
+│   └── repositories/
+│       └── index.ts          # Repository CRUD
+├── prisma/
+│   └── schema.prisma         # Database schema
+└── scripts/
+    └── seed.ts               # Database seeding
