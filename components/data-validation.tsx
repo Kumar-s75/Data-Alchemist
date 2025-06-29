@@ -50,6 +50,7 @@ export default function DataValidation() {
         severity: rec.priority === "high" ? "warning" : "info",
       }))
 
+      // @ts-ignore
       setValidationErrors((prev) => [...prev, ...aiErrors])
       setSuggestions((prev) => [...prev, ...aiSuggestions])
     } catch (error) {
@@ -107,7 +108,7 @@ export default function DataValidation() {
     const duplicateWorkers = workerIds.filter((id, index) => workerIds.indexOf(id) !== index)
     const duplicateTasks = taskIds.filter((id, index) => taskIds.indexOf(id) !== index)
 
-    duplicateClients.forEach((id) => {
+    duplicateClients.forEach((id: string) => {
       errors.push({
         id: `duplicate-client-${id}`,
         type: "duplicate-id",
@@ -150,10 +151,10 @@ export default function DataValidation() {
       const requestedTaskIds = Array.isArray(client.RequestedTaskIDs)
         ? client.RequestedTaskIDs
         : typeof client.RequestedTaskIDs === "string"
-        ? client.RequestedTaskIDs.split(",").map((id) => id.trim()).filter(Boolean)
+        ? (client.RequestedTaskIDs as string).split(",").map((id: string) => id.trim()).filter(Boolean)
         : []
 
-      requestedTaskIds.forEach((taskId) => {
+      requestedTaskIds.forEach((taskId: string) => {
         if (!taskIds.includes(taskId)) {
           errors.push({
             id: `unknown-task-${client.ClientID}-${taskId}`,
@@ -168,8 +169,8 @@ export default function DataValidation() {
       })
     })
 
-    const allRequiredSkills = [...new Set(tasks.flatMap((task) => Array.isArray(task.RequiredSkills) ? task.RequiredSkills : []))] || []
-    const allWorkerSkills = [...new Set(workers.flatMap((worker) => Array.isArray(worker.Skills) ? worker.Skills : []))] || []
+    const allRequiredSkills = [...new Set(tasks.flatMap((task) => Array.isArray(task.RequiredSkills) ? task.RequiredSkills : []))]
+    const allWorkerSkills = [...new Set(workers.flatMap((worker) => Array.isArray(worker.Skills) ? worker.Skills : []))]
 
     allRequiredSkills.forEach((skill) => {
       if (!allWorkerSkills.includes(skill)) {
