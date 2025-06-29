@@ -58,12 +58,9 @@ npm run build
 
 ## Precautions
 
-*   The Hugging Face API is currently being accessed via the **free tier**, which may lead to:
-*     
-*   Occasional rate-limiting issues.
-*         
-*   Potential slow API responses.
-*         
+*   The Hugging Face API is currently being accessed via the **free tier**, which may lead to:     
+*   Occasional rate-limiting issues.         
+*   Potential slow API responses.        
 *   Temporary API unavailability
 
 
