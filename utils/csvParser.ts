@@ -1,10 +1,3 @@
-import { clsx, type ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
-
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
-}
-
 export const parseCSV = (text: string): any[] => {
   const lines = text.split("\n").filter((line) => line.trim())
   if (lines.length < 2) return []

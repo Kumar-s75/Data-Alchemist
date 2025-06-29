@@ -1,0 +1,19 @@
+TaskID,TaskName,Category,Duration,RequiredSkills,PreferredPhases,MaxConcurrent
+T001,Frontend Dashboard Development,development,2,"JavaScript,React","[1, 2]",2
+T002,API Integration Layer,integration,1,"Node.js,JavaScript","[2, 3]",1
+T003,Database Schema Design,database,3,"PostgreSQL,SQL","[1, 2, 3]",1
+T004,Mobile App Prototype,mobile,2,"React Native,JavaScript","[1, 2]",1
+T005,User Authentication System,security,2,"Node.js,JWT,Security","[2, 3]",1
+T006,Data Analytics Pipeline,analytics,3,"Python,Pandas,SQL","[2, 3, 4]",1
+T007,Cloud Infrastructure Setup,infrastructure,2,"AWS,Docker,Terraform","[3, 4]",1
+T008,Machine Learning Model,ai-ml,4,"Python,TensorFlow,Machine Learning","[2, 3, 4]",1
+T009,Real-time Chat Feature,feature,2,"WebSocket,Node.js,React","[2, 3]",1
+T010,Performance Optimization,optimization,1,"JavaScript,Performance,Monitoring","[3, 4]",2
+T011,Content Management System,cms,3,"PHP,Laravel,MySQL","[1, 2, 3]",1
+T012,E-commerce Integration,integration,2,"JavaScript,Payment APIs,Security","[2, 3]",1
+T013,Automated Testing Suite,testing,2,"Testing,Automation,CI/CD","[3, 4]",2
+T014,Microservices Architecture,architecture,3,"Docker,Kubernetes,Go","[2, 3, 4]",1
+T015,GraphQL API Development,api,2,"GraphQL,Node.js,Database","[2, 3]",1
+T016,Progressive Web App,pwa,3,"JavaScript,PWA,Service Workers","[1, 2, 3]",1
+T017,DevOps Pipeline Setup,devops,2,"Jenkins,Docker,AWS","[3, 4]",1
+T018,Security Audit & Fixes,security,2,"Security,Penetration Testing,Compliance","[3, 4]",1
