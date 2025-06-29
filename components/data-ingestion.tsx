@@ -229,12 +229,12 @@ const generateSampleData = async () => {
     const rawWorkersData = parseCSV(workersText)
     const rawTasksData = parseCSV(tasksText)
 
-    // Apply AI parsing to normalize the sample data
+    
     const clientsData = await aiEnhancedParsing(rawClientsData, "clients")
     const workersData = await aiEnhancedParsing(rawWorkersData, "workers")
     const tasksData = await aiEnhancedParsing(rawTasksData, "tasks")
 
-    // Update state with normalized data
+    
     setClients(clientsData)
     setWorkers(workersData)
     setTasks(tasksData)
@@ -272,7 +272,7 @@ const generateSampleData = async () => {
 
   return (
     <motion.div className="space-y-8" variants={staggerContainer} initial="hidden" animate="visible">
-      {/* Upload Section */}
+   
       <motion.div variants={cardVariants}>
         <Card className="glass-card rounded-2xl">
           <CardHeader>
@@ -303,7 +303,7 @@ const generateSampleData = async () => {
                         </div>
                       </CardHeader>
                       <CardContent className="space-y-4">
-                        {/* File Upload Area */}
+                   
                         <div className="relative">
                           <label
                             htmlFor={`file-${config.type}`}
@@ -330,7 +330,7 @@ const generateSampleData = async () => {
                           </label>
                         </div>
 
-                        {/* Alternative Upload Button */}
+                      
                         <div className="text-center">
                           <Button
                             variant="outline"
@@ -344,7 +344,7 @@ const generateSampleData = async () => {
                           </Button>
                         </div>
 
-                        {/* Upload Status */}
+                     
                         <AnimatePresence>
                           {uploadStatus[config.type] && (
                             <motion.div
@@ -359,7 +359,7 @@ const generateSampleData = async () => {
                           )}
                         </AnimatePresence>
 
-                        {/* Processing Indicator */}
+                       
                         <AnimatePresence>
                           {isProcessing && (
                             <motion.div
@@ -438,7 +438,6 @@ const generateSampleData = async () => {
         </Card>
       </motion.div>
 
-      {/* Natural Language Search */}
       <AnimatePresence>
         {(clients.length > 0 || workers.length > 0 || tasks.length > 0) && (
           <motion.div
@@ -452,7 +451,7 @@ const generateSampleData = async () => {
         )}
       </AnimatePresence>
 
-      {/* Data Grids */}
+  
       <AnimatePresence>
         {(clients.length > 0 || workers.length > 0 || tasks.length > 0) && (
           <motion.div

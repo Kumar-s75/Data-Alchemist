@@ -50,7 +50,7 @@ export default function ExportPanel() {
       version: "1.0",
       timestamp: new Date().toISOString(),
 
-      // Business Rules
+   
       businessRules: businessRules
         .filter((rule) => rule.active)
         .map((rule) => ({
@@ -62,7 +62,7 @@ export default function ExportPanel() {
           active: rule.active,
         })),
 
-      // Priority Weights Configuration
+     
       prioritizationSettings: {
         weights: priorityWeights,
         totalWeight: Object.values(priorityWeights).reduce((sum, weight) => sum + weight, 0),
@@ -101,7 +101,7 @@ export default function ExportPanel() {
         },
       },
 
-      // Allocation Constraints
+   
       allocationConstraints: {
         enforceSkillRequirements: true,
         respectPhaseWindows: true,
@@ -110,7 +110,7 @@ export default function ExportPanel() {
         optimizeResourceUtilization: true,
       },
 
-      // Data Quality Metadata
+     
       dataQuality: {
         validationStatus: hasErrors ? "errors" : hasWarnings ? "warnings" : "clean",
         totalErrors: validationErrors.filter((e) => e.severity === "error").length,
@@ -118,7 +118,7 @@ export default function ExportPanel() {
         lastValidated: new Date().toISOString(),
       },
 
-      // Entity Counts
+     
       entityCounts: {
         totalClients: clients.length,
         totalWorkers: workers.length,
@@ -126,7 +126,7 @@ export default function ExportPanel() {
         activeRules: businessRules.filter((r) => r.active).length,
       },
 
-      // Configuration Metadata
+     
       configurationMetadata: {
         generatedBy: "Data Alchemist v1.0",
         generatedAt: new Date().toISOString(),
@@ -156,7 +156,7 @@ export default function ExportPanel() {
   const handleExport = async () => {
     setIsExporting(true)
 
-    // Simulate export processing
+    
     await new Promise((resolve) => setTimeout(resolve, 1500))
 
     const exports = []
@@ -181,7 +181,7 @@ export default function ExportPanel() {
       exports.push(rulesJSON)
     }
 
-    // Download all files
+    
     exports.forEach((file) => {
       const type = file.filename.endsWith(".json") ? "application/json" : "text/csv"
       downloadFile(file.filename, file.content, type)
@@ -213,7 +213,7 @@ export default function ExportPanel() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {/* Validation Status */}
+        
           <div className="mb-6">
             <h3 className="font-medium mb-3 text-white">Data Quality Status</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -264,7 +264,7 @@ export default function ExportPanel() {
             </Alert>
           )}
 
-          {/* Export Options */}
+         
           <div className="space-y-4">
             <h3 className="font-medium text-white">Export Options</h3>
 
@@ -340,7 +340,7 @@ export default function ExportPanel() {
             </div>
           </div>
 
-          {/* Priority Weights Preview */}
+          
           {exportOptions.weights && (
             <div className="mt-6 p-4 glass-card rounded-lg border-blue-500/30">
               <h4 className="font-medium mb-2 text-white">Priority Weights Configuration</h4>
@@ -357,7 +357,7 @@ export default function ExportPanel() {
             </div>
           )}
 
-          {/* Export Summary */}
+       
           <div className="mt-6 p-4 glass-card rounded-lg">
             <h4 className="font-medium mb-2 text-white">Export Summary</h4>
             <p className="text-sm text-white/70 mb-3">Ready to export: {getExportSummary()}</p>
@@ -377,7 +377,7 @@ export default function ExportPanel() {
             </div>
           </div>
 
-          {/* Export Button */}
+       
           <div className="mt-6">
             <Button
               onClick={handleExport}
@@ -401,7 +401,7 @@ export default function ExportPanel() {
         </CardContent>
       </Card>
 
-      {/* Export Instructions */}
+      
       <Card className="glass-card rounded-2xl">
         <CardHeader>
           <CardTitle className="text-white">Integration Guide</CardTitle>

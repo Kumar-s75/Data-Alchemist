@@ -23,7 +23,7 @@ async function callHuggingFace(prompt: string) {
     },
     body: JSON.stringify({
       inputs: prompt,
-      parameters: { max_new_tokens: 800, temperature: 0.7 }, // Falcon token size adjusted
+      parameters: { max_new_tokens: 800, temperature: 0.7 }, 
     }),
   })
 

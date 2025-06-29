@@ -38,7 +38,7 @@ export default function DragDropRanking() {
       weight,
     }))
 
-    // Sort by current weight (highest first)
+    
     criteriaArray.sort((a, b) => b.weight - a.weight)
     setCriteria(criteriaArray)
   }, [priorityWeights])
@@ -63,12 +63,12 @@ export default function DragDropRanking() {
   }
 
   const applyRanking = () => {
-    // Convert ranking to weights (highest rank gets highest weight)
+  
     const totalItems = criteria.length
     const newWeights = { ...priorityWeights }
 
     criteria.forEach((item, index) => {
-      // Use exponential decay for more pronounced differences
+  
       const rank = index + 1
       const weight = Math.round(
         (Math.pow(totalItems - rank + 1, 1.5) /
@@ -78,7 +78,7 @@ export default function DragDropRanking() {
       newWeights[item.key as keyof typeof priorityWeights] = weight
     })
 
-    // Normalize to ensure sum is 100
+   
     const total = Object.values(newWeights).reduce((sum, weight) => sum + weight, 0)
     const factor = 100 / total
     Object.keys(newWeights).forEach((key) => {
@@ -108,10 +108,10 @@ export default function DragDropRanking() {
 
   const getRankColor = (index: number) => {
     const colors = [
-      "bg-yellow-500/20 text-yellow-400 border-yellow-500/30", // 1st - Gold
-      "bg-gray-500/20 text-gray-400 border-gray-500/30", // 2nd - Silver
-      "bg-orange-500/20 text-orange-400 border-orange-500/30", // 3rd - Bronze
-      "bg-blue-500/20 text-blue-400 border-blue-500/30", // 4th+
+      "bg-yellow-500/20 text-yellow-400 border-yellow-500/30", 
+      "bg-gray-500/20 text-gray-400 border-gray-500/30", 
+      "bg-orange-500/20 text-orange-400 border-orange-500/30", 
+      "bg-blue-500/20 text-blue-400 border-blue-500/30", 
       "bg-green-500/20 text-green-400 border-green-500/30",
       "bg-purple-500/20 text-purple-400 border-purple-500/30",
     ]

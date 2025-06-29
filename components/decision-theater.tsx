@@ -34,14 +34,14 @@ export default function DecisionTheater() {
   const [voiceEnabled, setVoiceEnabled] = useState(false)
   const [currentNarration, setCurrentNarration] = useState("")
 
-  // AI Narrator - Speaks insights and explanations
+  
   const narrateInsight = async (text: string) => {
     if (!voiceEnabled) return
 
     setCurrentNarration(text)
     setIsNarrating(true)
 
-    // Use Web Speech API for narration
+    
     if ("speechSynthesis" in window) {
       const utterance = new SpeechSynthesisUtterance(text)
       utterance.rate = 0.9
@@ -57,13 +57,13 @@ export default function DecisionTheater() {
     }
   }
 
-  // Generate AI-powered scenarios
+ 
   const generateScenarios = async () => {
     setIsSimulating(true)
     setSimulationProgress(0)
 
     try {
-      // Simulate AI scenario generation
+  
       const progressSteps = [
         { progress: 20, message: "Analyzing current data patterns..." },
         { progress: 40, message: "Generating alternative scenarios..." },
@@ -77,7 +77,7 @@ export default function DecisionTheater() {
         await new Promise((resolve) => setTimeout(resolve, 800))
       }
 
-      // Generate sample scenarios based on current data
+      
       const generatedScenarios: Scenario[] = [
         {
           id: "efficiency-first",
@@ -160,7 +160,7 @@ export default function DecisionTheater() {
       setScenarios(generatedScenarios)
       setActiveScenario(generatedScenarios[0].id)
 
-      // AI Narration
+    
       await narrateInsight(
         "I've generated three strategic scenarios based on your data. Each represents a different approach to resource allocation with unique trade-offs and outcomes.",
       )
@@ -172,7 +172,7 @@ export default function DecisionTheater() {
     }
   }
 
-  // Compare scenarios side by side
+
   const compareScenarios = () => {
     const comparison = scenarios.map((scenario) => ({
       name: scenario.name,
@@ -198,7 +198,7 @@ export default function DecisionTheater() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
+
       <Card className="glass-card rounded-2xl">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-white">
@@ -273,10 +273,10 @@ export default function DecisionTheater() {
         </CardContent>
       </Card>
 
-      {/* Scenario Theater */}
+    
       {scenarios.length > 0 && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Scenario Selection */}
+        
           <div className="space-y-4">
             <h3 className="font-medium text-white">Available Scenarios</h3>
             {scenarios.map((scenario) => (
@@ -310,7 +310,7 @@ export default function DecisionTheater() {
             ))}
           </div>
 
-          {/* Active Scenario Details */}
+       
           {activeScenarioData && (
             <div className="lg:col-span-2 space-y-4">
               <Card className="glass-card">
@@ -376,7 +376,7 @@ export default function DecisionTheater() {
                 </CardContent>
               </Card>
 
-              {/* Live Narration Display */}
+              
               {currentNarration && (
                 <Card className="glass-card border-blue-500/30">
                   <CardContent className="pt-4">

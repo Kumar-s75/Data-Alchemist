@@ -66,7 +66,7 @@ export default function RuleBuilder() {
 
       const aiRules = await response.json()
 
-      // Add all generated rules
+      
       aiRules.rules.forEach((rule: any) => {
         const newRule: BusinessRule = {
           id: `ai-rule-${Date.now()}-${Math.random()}`,
@@ -83,7 +83,7 @@ export default function RuleBuilder() {
       setNaturalLanguageInput("")
     } catch (error) {
       console.error("AI rule generation failed:", error)
-      // Fallback to simple rule generation
+      
     } finally {
       setIsProcessingNL(false)
     }
@@ -303,10 +303,9 @@ export default function RuleBuilder() {
         </CardContent>
       </Card>
 
-      {/* AI Rule Recommendations */}
       <AIRuleRecommendations />
 
-      {/* Active Rules */}
+    
       <Card>
         <CardHeader>
           <CardTitle>Active Rules ({businessRules.length})</CardTitle>

@@ -239,7 +239,7 @@ export default function DataValidation() {
 
   return (
     <div className="space-y-6">
-      {/* Validation Summary */}
+     
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -300,7 +300,7 @@ export default function DataValidation() {
         </CardContent>
       </Card>
 
-      {/* AI Suggestions */}
+  
       {suggestions.length > 0 && (
         <Card>
           <CardHeader>

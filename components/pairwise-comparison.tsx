@@ -13,7 +13,7 @@ import { useData } from "@/contexts/data-context"
 interface Comparison {
   criteriaA: string
   criteriaB: string
-  preference: number // 1-9 scale (1 = equal, 9 = extremely more important)
+  preference: number 
 }
 
 export default function PairwiseComparison() {
@@ -45,14 +45,14 @@ export default function PairwiseComparison() {
   }
 
   useEffect(() => {
-    // Generate all pairwise comparisons
+   
     const pairs: Comparison[] = []
     for (let i = 0; i < criteria.length; i++) {
       for (let j = i + 1; j < criteria.length; j++) {
         pairs.push({
           criteriaA: criteria[i],
           criteriaB: criteria[j],
-          preference: 1, // Default to equal
+          preference: 1, 
         })
       }
     }
@@ -90,13 +90,13 @@ export default function PairwiseComparison() {
   }
 
   const calculateWeights = () => {
-    // Simplified AHP calculation
+  
     const n = criteria.length
     const matrix: number[][] = Array(n)
       .fill(null)
       .map(() => Array(n).fill(1))
 
-    // Fill the comparison matrix
+
     comparisons.forEach((comp) => {
       const indexA = criteria.indexOf(comp.criteriaA)
       const indexB = criteria.indexOf(comp.criteriaB)
@@ -105,17 +105,17 @@ export default function PairwiseComparison() {
       matrix[indexB][indexA] = 1 / comp.preference
     })
 
-    // Calculate geometric mean of each row (simplified eigenvector calculation)
+  
     const weights = matrix.map((row) => {
       const product = row.reduce((prod, val) => prod * val, 1)
       return Math.pow(product, 1 / n)
     })
 
-    // Normalize weights
+
     const sum = weights.reduce((total, weight) => total + weight, 0)
     const normalizedWeights = weights.map((weight) => Math.round((weight / sum) * 100))
 
-    // Apply to priority weights
+  
     const newWeights = { ...priorityWeights }
     criteria.forEach((criterion, index) => {
       newWeights[criterion as keyof typeof priorityWeights] = normalizedWeights[index]

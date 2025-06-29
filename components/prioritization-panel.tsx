@@ -105,7 +105,7 @@ export default function PrioritizationPanel() {
   const updateWeight = (key: keyof typeof priorityWeights, value: number[]) => {
     const newWeights = { ...priorityWeights, [key]: value[0] }
 
-    // Normalize weights to sum to 100
+  
     const total = Object.values(newWeights).reduce((sum, weight) => sum + weight, 0)
     if (total !== 100) {
       const factor = 100 / total
@@ -115,7 +115,7 @@ export default function PrioritizationPanel() {
     }
 
     setPriorityWeights(newWeights)
-    setSelectedPreset("") // Clear preset selection when manually adjusting
+    setSelectedPreset("") 
   }
 
   const criteriaDescriptions = {
@@ -289,7 +289,7 @@ export default function PrioritizationPanel() {
         </CardContent>
       </Card>
 
-      {/* Weight Distribution Visualization */}
+     
       <Card className="glass-card rounded-2xl">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-white">

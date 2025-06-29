@@ -31,7 +31,7 @@ async function callHuggingFace(prompt: string) {
     },
     body: JSON.stringify({
       inputs: prompt,
-      parameters: { max_new_tokens: 800, temperature: 0.7 }, // ✅ Falcon Safe Range
+      parameters: { max_new_tokens: 800, temperature: 0.7 }, 
     }),
   })
 
@@ -45,7 +45,7 @@ async function callHuggingFace(prompt: string) {
 
   let generatedText = null
 
-  // ✅ Supports both Falcon response formats
+  
   if (Array.isArray(result) && result[0]?.generated_text) {
     generatedText = result[0].generated_text
   } else if (typeof result?.generated_text === "string") {
@@ -64,7 +64,7 @@ export async function POST(request: Request) {
   try {
     const { validationErrors, clients, workers, tasks } = await request.json()
 
-    // ✅ Basic input size control to prevent token overflow
+   
     const approxPromptSize =
       JSON.stringify(validationErrors).length +
       JSON.stringify(clients.slice(0, 3)).length +

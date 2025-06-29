@@ -44,7 +44,7 @@ export default function NaturalLanguageModifier() {
       const result = await response.json()
       setModifications(result.modifications)
 
-      // Auto-select safe, high-confidence modifications
+      
       const autoSelect = new Set(
         result.modifications
           .filter((mod: Modification) => mod.safe_to_apply && mod.confidence > 0.8)
@@ -80,7 +80,7 @@ export default function NaturalLanguageModifier() {
         }
       })
 
-      // Clear applied modifications
+   
       setModifications((prev) => prev.filter((_, index) => !selectedMods.has(index.toString())))
       setSelectedMods(new Set())
       setQuery("")

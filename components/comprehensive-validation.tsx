@@ -12,7 +12,7 @@ export function useComprehensiveValidation() {
     const errors: ValidationError[] = []
 
     try {
-      // 1. Missing required columns
+     
       clients.forEach((client, index) => {
         if (!client.ClientID) {
           errors.push({
@@ -38,7 +38,7 @@ export function useComprehensiveValidation() {
         }
       })
 
-      // 2. Duplicate IDs
+     
       const clientIds = clients.map((c) => c.ClientID).filter(Boolean)
       const workerIds = workers.map((w) => w.WorkerID).filter(Boolean)
       const taskIds = tasks.map((t) => t.TaskID).filter(Boolean)
@@ -61,7 +61,7 @@ export function useComprehensiveValidation() {
       findDuplicates(workerIds, "Worker")
       findDuplicates(taskIds, "Task")
 
-      // 3. Malformed lists
+      
       workers.forEach((worker) => {
         if (worker.AvailableSlots && Array.isArray(worker.AvailableSlots)) {
           const invalidSlots = worker.AvailableSlots.filter((slot) => typeof slot !== "number" || slot < 1)
@@ -79,7 +79,7 @@ export function useComprehensiveValidation() {
         }
       })
 
-      // 4. Out-of-range values
+      
       clients.forEach((client) => {
         if (client.PriorityLevel < 1 || client.PriorityLevel > 5) {
           errors.push({
@@ -108,7 +108,7 @@ export function useComprehensiveValidation() {
         }
       })
 
-      // 5. Broken JSON in AttributesJSON
+     
       clients.forEach((client) => {
         if (client.AttributesJSON) {
           try {
@@ -127,7 +127,7 @@ export function useComprehensiveValidation() {
         }
       })
 
-      // 6. Unknown references
+     
       clients.forEach((client) => {
         client.RequestedTaskIDs.forEach((taskId) => {
           if (!taskIds.includes(taskId)) {
@@ -144,11 +144,11 @@ export function useComprehensiveValidation() {
         })
       })
 
-      // 7. Circular co-run groups (simplified check)
+    
       const coRunRules = businessRules.filter((rule) => rule.type === "coRun" && rule.active)
-      // This would need a more sophisticated graph algorithm for full circular dependency detection
+      
       if (coRunRules.length > 0) {
-        // Build adjacency graph for co-run relationships
+       
         const coRunGraph: Record<string, string[]> = {}
 
         coRunRules.forEach((rule) => {
@@ -163,7 +163,7 @@ export function useComprehensiveValidation() {
           })
         })
 
-        // Detect cycles using DFS
+       
         const visited = new Set<string>()
         const recursionStack = new Set<string>()
 
@@ -197,7 +197,7 @@ export function useComprehensiveValidation() {
         })
       }
 
-      // 8. Conflicting rules vs phase-window constraints
+     
       const phaseWindowRules = businessRules.filter((rule) => rule.type === "phaseWindow" && rule.active)
       const loadLimitRules = businessRules.filter((rule) => rule.type === "loadLimit" && rule.active)
 
@@ -205,11 +205,11 @@ export function useComprehensiveValidation() {
         const taskId = phaseRule.parameters.taskId
         const allowedPhases = phaseRule.parameters.allowedPhases || []
 
-        // Find the task
+      
         const task = tasks.find((t) => t.TaskID === taskId)
         if (!task) return
 
-        // Check if task's preferred phases conflict with phase window
+       
         const conflictingPhases = task.PreferredPhases.filter((phase) => !allowedPhases.includes(phase))
         if (conflictingPhases.length > 0) {
           errors.push({
@@ -222,7 +222,7 @@ export function useComprehensiveValidation() {
           })
         }
 
-        // Check if workers available in allowed phases can handle the task
+     
         const requiredSkills = task.RequiredSkills
         const qualifiedWorkers = workers.filter((worker) =>
           requiredSkills.every((skill) => worker.Skills.includes(skill)),
@@ -244,7 +244,7 @@ export function useComprehensiveValidation() {
         }
       })
 
-      // Check load limit conflicts with co-run rules
+    
       coRunRules.forEach((coRunRule) => {
         const coRunTasks = coRunRule.parameters.tasks || []
 
@@ -252,12 +252,12 @@ export function useComprehensiveValidation() {
           const task = tasks.find((t) => t.TaskID === taskId)
           if (!task) return
 
-          // Find workers who can do this task
+         
           const qualifiedWorkers = workers.filter((worker) =>
             task.RequiredSkills.every((skill) => worker.Skills.includes(skill)),
           )
 
-          // Check if load limits would prevent co-run execution
+          
           loadLimitRules.forEach((loadRule) => {
             const workerGroup = loadRule.parameters.workerGroup
             const maxSlots = loadRule.parameters.maxSlotsPerPhase
@@ -280,7 +280,7 @@ export function useComprehensiveValidation() {
         })
       })
 
-      // 9. Overloaded workers
+
       workers.forEach((worker) => {
         if (worker.AvailableSlots && worker.AvailableSlots.length < worker.MaxLoadPerPhase) {
           errors.push({
@@ -295,7 +295,7 @@ export function useComprehensiveValidation() {
         }
       })
 
-      // 10. Phase-slot saturation
+  
       const phaseCapacity: Record<number, number> = {}
       const phaseDemand: Record<number, number> = {}
 
@@ -328,7 +328,7 @@ export function useComprehensiveValidation() {
         }
       })
 
-      // 11. Skill-coverage matrix
+    
       const allRequiredSkills = [...new Set(tasks.flatMap((task) => task.RequiredSkills))]
       const allWorkerSkills = [...new Set(workers.flatMap((worker) => worker.Skills))]
 
@@ -345,7 +345,7 @@ export function useComprehensiveValidation() {
         }
       })
 
-      // 12. Max-concurrency feasibility
+   
       tasks.forEach((task) => {
         const qualifiedWorkers = workers.filter((worker) =>
           task.RequiredSkills.every((skill) => worker.Skills.includes(skill)),

@@ -28,7 +28,7 @@ export default function AIInsightsDashboard() {
     setIsAnalyzing(true)
     setAnalysisProgress(0)
 
-    // Simulate AI analysis progress
+   
     const progressSteps = [
       "Analyzing resource capacity...",
       "Identifying skill gaps...",
@@ -42,10 +42,10 @@ export default function AIInsightsDashboard() {
       await new Promise((resolve) => setTimeout(resolve, 800))
     }
 
-    // Generate sample insights based on actual data
+    
     const generatedInsights: AIInsight[] = []
 
-    // Capacity Analysis
+ 
     const totalDemand = clients.reduce((sum, client) => sum + client.RequestedTaskIDs.length, 0)
     const totalCapacity = workers.reduce((sum, worker) => sum + worker.MaxLoadPerPhase, 0)
 
@@ -61,7 +61,7 @@ export default function AIInsightsDashboard() {
       })
     }
 
-    // Skill Gap Analysis
+
     const requiredSkills = [...new Set(tasks.flatMap((task) => task.RequiredSkills))]
     const availableSkills = [...new Set(workers.flatMap((worker) => worker.Skills))]
     const missingSkills = requiredSkills.filter((skill) => !availableSkills.includes(skill))
@@ -78,7 +78,7 @@ export default function AIInsightsDashboard() {
       })
     }
 
-    // Workload Distribution
+ 
     const workerGroups = [...new Set(workers.map((w) => w.WorkerGroup))]
     const groupCapacities = workerGroups.map((group) => ({
       group,
@@ -100,7 +100,7 @@ export default function AIInsightsDashboard() {
       })
     }
 
-    // Co-run Opportunities
+
   const tasksBySkills = tasks.reduce(
   (acc, task) => {
     const skillKey = (Array.isArray(task.RequiredSkills) ? task.RequiredSkills : [])
@@ -129,7 +129,7 @@ export default function AIInsightsDashboard() {
       })
     }
 
-    // Priority Analysis
+
     const highPriorityClients = clients.filter((c) => c.PriorityLevel >= 4).length
     const totalClients = clients.length
 

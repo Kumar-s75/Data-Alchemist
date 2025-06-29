@@ -72,7 +72,7 @@ export async function POST(request: Request) {
   try {
     const { clients, workers, tasks } = await request.json()
 
-    // ✅ Approximate input size safeguard
+    
     const approxPromptSize =
       JSON.stringify(clients.slice(0, 5)).length +
       JSON.stringify(workers.slice(0, 5)).length +

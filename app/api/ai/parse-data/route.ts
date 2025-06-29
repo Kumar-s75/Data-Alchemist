@@ -27,7 +27,7 @@ async function callHuggingFace(prompt: string) {
     },
     body: JSON.stringify({
       inputs: prompt,
-      parameters: { max_new_tokens: 800, temperature: 0.7 }, // ✅ Falcon safe range
+      parameters: { max_new_tokens: 800, temperature: 0.7 }, 
     }),
   })
 
@@ -39,7 +39,7 @@ async function callHuggingFace(prompt: string) {
 
   const result = await response.json()
 
-  // ✅ Support Falcon’s array response
+  
   let generatedText = null
   if (Array.isArray(result) && result[0]?.generated_text) {
     generatedText = result[0].generated_text
@@ -73,7 +73,7 @@ export async function POST(request: Request) {
       tasks: ["TaskID", "TaskName", "Category", "Duration", "RequiredSkills", "PreferredPhases", "MaxConcurrent"],
     }
 
-    // ✅ Prompt size safeguard
+ 
     const approxPromptSize = JSON.stringify(headers).length + JSON.stringify(sampleData.slice(0, 3)).length
     if (approxPromptSize > 3000) {
       return Response.json({ error: "Input dataset too large for Falcon to process. Please reduce dataset size." }, { status: 400 })

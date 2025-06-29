@@ -28,7 +28,7 @@ export default function NaturalLanguageSearch() {
 
       const searchParams = await response.json()
 
-      // Apply the AI-generated filters
+      
       let filteredResults: any[] = []
 
       searchParams.target_entities.forEach((entityType: string) => {
@@ -63,7 +63,7 @@ export default function NaturalLanguageSearch() {
       setResults(filteredResults)
     } catch (error) {
       console.error("AI search failed:", error)
-      // Fallback to simple search
+    
       setResults([])
     } finally {
       setIsSearching(false)
@@ -121,7 +121,7 @@ export default function NaturalLanguageSearch() {
           </Button>
         </div>
 
-        {/* Sample Queries */}
+      
         <div className="flex flex-wrap gap-2 mb-4">
           <span className="text-sm text-gray-500">Try these:</span>
           {[
@@ -145,7 +145,7 @@ export default function NaturalLanguageSearch() {
           ))}
         </div>
 
-        {/* Results */}
+    
         {results.length > 0 && (
           <div className="space-y-2">
             <div className="flex items-center gap-2">

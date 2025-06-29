@@ -32,7 +32,7 @@ async function callHuggingFace(prompt: string) {
     },
     body: JSON.stringify({
       inputs: prompt,
-      parameters: { max_new_tokens: 800, temperature: 0.7 }, // ✅ Falcon recommended token limit
+      parameters: { max_new_tokens: 800, temperature: 0.7 }, 
     }),
   })
 
@@ -46,7 +46,7 @@ async function callHuggingFace(prompt: string) {
 
   let generatedText = null
 
-  // ✅ Handle both array and object response formats
+
   if (Array.isArray(result) && result[0]?.generated_text) {
     generatedText = result[0].generated_text
   } else if (typeof result?.generated_text === "string") {

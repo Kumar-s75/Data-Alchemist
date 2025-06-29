@@ -151,9 +151,9 @@ export default function DataAlchemist() {
   return (
     <DataProvider>
       <div className="agamify-gradient min-h-screen relative overflow-hidden">
-        {/* Background Elements */}
+   
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          {/* Animated background particles */}
+          
           <motion.div
             className="absolute top-20 left-10 w-2 h-2 bg-blue-400/30 rounded-full"
             animate={{
@@ -202,9 +202,9 @@ export default function DataAlchemist() {
         >
           <MobileNavigation />
 
-          {/* Hero Section with Integrated Logo */}
+         
           <motion.div className="text-center mb-16 md:mb-20 relative" variants={itemVariants}>
-            {/* Logo and Title Integration */}
+         
             <div className="flex flex-col items-center mb-8">
               <motion.div
                 className="relative mb-4"
@@ -212,13 +212,12 @@ export default function DataAlchemist() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                {/* Main Logo */}
+              
                 <div className="relative">
                   <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-gradient-to-br from-blue-500 via-purple-600 to-cyan-500 flex items-center justify-center shadow-2xl">
                     <Atom className="h-8 w-8 md:h-10 md:w-10 text-white" />
                   </div>
 
-                  {/* Animated rings around logo */}
                   <motion.div
                     className="absolute inset-0 rounded-full border-2 border-blue-400/30"
                     animate={{ rotate: 360 }}
@@ -232,7 +231,7 @@ export default function DataAlchemist() {
                     style={{ width: "140%", height: "140%", top: "-20%", left: "-20%" }}
                   />
 
-                  {/* Glow effect */}
+                 
                   <motion.div
                     className="absolute inset-0 bg-gradient-to-br from-blue-500/20 via-purple-600/20 to-cyan-500/20 rounded-full blur-xl"
                     animate={{ scale: [1, 1.2, 1] }}
@@ -265,7 +264,7 @@ export default function DataAlchemist() {
               Transform spreadsheets into clean, validated data with AI.
             </motion.h2>
 
-            {/* Feature highlights */}
+        
             <motion.div className="flex flex-wrap justify-center gap-4 mb-12" variants={itemVariants}>
               {[
                 { icon: Sparkles, text: "AI Column Mapping" },
@@ -285,10 +284,10 @@ export default function DataAlchemist() {
             </motion.div>
           </motion.div>
 
-          {/* Main Interface */}
+        
           <motion.div variants={itemVariants}>
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-              {/* Desktop Navigation */}
+             
               <TabsList className="agamify-tabs hidden md:grid w-full grid-cols-5 mb-8 h-auto p-2">
                 {tabs.map((tab) => {
                   const Icon = tab.icon
@@ -308,12 +307,12 @@ export default function DataAlchemist() {
                 })}
               </TabsList>
 
-              {/* Mobile Navigation Indicator */}
+             
               <div className="md:hidden mb-6 flex justify-center">
                 <div className="pill-badge">{tabs.find((tab) => tab.value === activeTab)?.label}</div>
               </div>
 
-              {/* Tab Content */}
+           
               <AnimatePresence mode="wait">
                 <motion.div key={activeTab} variants={tabVariants} initial="hidden" animate="visible" exit="exit">
                   <TabsContent value="ingestion" className="mt-0">

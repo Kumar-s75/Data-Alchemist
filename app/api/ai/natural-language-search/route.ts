@@ -99,7 +99,7 @@ export async function POST(request: Request) {
 
     let parsed
     try {
-      // Sometimes Falcon wraps JSON in additional quotes, handle that
+     
       const cleanText = responseText.trim().replace(/^"|"$/g, "").replace(/\\"/g, '"')
       parsed = JSON.parse(cleanText)
     } catch (error) {

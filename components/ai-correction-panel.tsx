@@ -50,7 +50,7 @@ export default function AICorrectionPanel() {
       setCorrections(result.corrections)
       setBulkOperations(result.bulk_operations)
 
-      // Auto-select high-confidence, auto-applicable corrections
+      
       const autoSelect = new Set(
         result.corrections
           .filter((c: Correction) => c.auto_applicable && c.confidence > 0.8)
@@ -73,7 +73,7 @@ export default function AICorrectionPanel() {
         if (selectedCorrections.has(correctionId)) {
           const updates = { [correction.field]: correction.suggested_value }
 
-          // Determine entity type and apply update
+          
           if (clients.some((c) => c.ClientID === correction.entity_id)) {
             updateClient(correction.entity_id, updates)
           } else if (workers.some((w) => w.WorkerID === correction.entity_id)) {
@@ -84,7 +84,7 @@ export default function AICorrectionPanel() {
         }
       })
 
-      // Clear applied corrections
+     
       setCorrections((prev) => prev.filter((c) => !selectedCorrections.has(`${c.entity_id}-${c.field}`)))
       setSelectedCorrections(new Set())
     } catch (error) {
