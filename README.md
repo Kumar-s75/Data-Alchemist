@@ -30,31 +30,25 @@ By combining deterministic validation, AI-enhanced reasoning, and intuitive inte
 
 🎯 Whether you're a data engineer, analyst, or developer, Data Alchemist simplifies data validation and correction processes with AI-powered efficiency.
 
----
+-
+#### Available Scripts
+powershell
+npm install --legacy-peer-deps  #install dependencies
+npm run dev                     #run the project
+npm run build                   #build the project
 
-## Folder Structure
-#### Folder Structure
-Frontend/
-├── lib/
-│   └── database/
-│       ├── prisma.ts          # Database connection
-│       ├── user.service.ts     # User operations
-│       ├── repository.service.ts # Repository operations
-│       ├── branch.service.ts   # Branch operations
-│       ├── language.service.ts # Language operations
-│       ├── utils.ts           # Database utilities
-│       └── index.ts           # Exports
-├── types/
-│   └── database.ts            # TypeScript types
-├── pages/api/
-│   ├── database/
-│   │   └── test.ts           # Database test endpoint
-│   ├── users/
-│   │   ├── index.ts          # User CRUD
-│   │   └── [id].ts           # User by ID
-│   └── repositories/
-│       └── index.ts          # Repository CRUD
-├── prisma/
-│   └── schema.prisma         # Database schema
-└── scripts/
-    └── seed.ts               # Database seeding
+## Tech Stack 
+| Technology            | Role                                                                 |
+| --------------------- | -------------------------------------------------------------------- |
+| **Next.js**           | Frontend + backend fullstack React framework (API routes, SSR, etc.) |
+| **Radix Ui**            | customizable designed components and theme                 |
+| **Framer motion**    | Allows to create beautiful animations                          |
+| **Docker**            | Containerization for consistent environments                         |
+| **Hugging Face APi** | Provides access to different Ai models and apis                  |
+| **falcon-7b-instruct** | fast and free Ai model                  |
+
+##Precautions
+->There might be some issues due to api responses from Hugging Face Api due to rate limits, as we are using Free tier right now.
+
+
+
