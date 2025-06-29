@@ -24,7 +24,7 @@ export async function POST(request: Request) {
     const { query, clients, workers, tasks } = await request.json()
 
     const { object } = await generateObject({
-      model: groq("llama-3.1-70b-versatile"),
+      model: groq("llama3-8b-8192"),
       schema: ModificationSchema,
       prompt: `
         You are an expert data analyst. The user wants to modify data using this natural language request: "${query}"

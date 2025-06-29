@@ -210,82 +210,33 @@ export default function DataIngestion() {
     [setClients, setWorkers, setTasks],
   )
 
-  const generateSampleData = () => {
-    const sampleClients = [
-      {
-        ClientID: "C001",
-        ClientName: "Acme Corp",
-        PriorityLevel: 5,
-        RequestedTaskIDs: ["T001", "T002"],
-        GroupTag: "enterprise",
-        AttributesJSON: '{"budget": 50000, "deadline": "2024-03-01"}',
-      },
-      {
-        ClientID: "C002",
-        ClientName: "TechStart Inc",
-        PriorityLevel: 3,
-        RequestedTaskIDs: ["T003"],
-        GroupTag: "startup",
-        AttributesJSON: '{"budget": 15000, "deadline": "2024-02-15"}',
-      },
-    ]
+const generateSampleData = async () => {
+  try {
+    const [clientsResponse, workersResponse, tasksResponse] = await Promise.all([
+      fetch("/api/samples/clients.csv"),
+      fetch("/api/samples/workers.csv"),
+      fetch("/api/samples/tasks.csv"),
+    ])
 
-    const sampleWorkers = [
-      {
-        WorkerID: "W001",
-        WorkerName: "Alice Johnson",
-        Skills: ["JavaScript", "React", "Node.js"],
-        AvailableSlots: [1, 2, 3],
-        MaxLoadPerPhase: 3,
-        WorkerGroup: "frontend",
-        QualificationLevel: 4,
-      },
-      {
-        WorkerID: "W002",
-        WorkerName: "Bob Smith",
-        Skills: ["Python", "Django", "PostgreSQL"],
-        AvailableSlots: [2, 3, 4],
-        MaxLoadPerPhase: 2,
-        WorkerGroup: "backend",
-        QualificationLevel: 5,
-      },
-    ]
+    const [clientsText, workersText, tasksText] = await Promise.all([
+      clientsResponse.text(),
+      workersResponse.text(),
+      tasksResponse.text(),
+    ])
 
-    const sampleTasks = [
-      {
-        TaskID: "T001",
-        TaskName: "Frontend Development",
-        Category: "development",
-        Duration: 2,
-        RequiredSkills: ["JavaScript", "React"],
-        PreferredPhases: [1, 2],
-        MaxConcurrent: 2,
-      },
-      {
-        TaskID: "T002",
-        TaskName: "API Integration",
-        Category: "integration",
-        Duration: 1,
-        RequiredSkills: ["Node.js"],
-        PreferredPhases: [2, 3],
-        MaxConcurrent: 1,
-      },
-      {
-        TaskID: "T003",
-        TaskName: "Database Design",
-        Category: "database",
-        Duration: 3,
-        RequiredSkills: ["PostgreSQL"],
-        PreferredPhases: [1, 2, 3],
-        MaxConcurrent: 1,
-      },
-    ]
+    const clientsData = parseCSV(clientsText)
+    const workersData = parseCSV(workersText)
+    const tasksData = parseCSV(tasksText)
 
-    setClients(sampleClients)
-    setWorkers(sampleWorkers)
-    setTasks(sampleTasks)
+    setClients(clientsData)
+    setWorkers(workersData)
+    setTasks(tasksData)
     setUploadStatus({ clients: true, workers: true, tasks: true })
+  } catch (error) {
+    console.error("Error loading sample data:", error)
   }
+}
+
 
   const entityConfigs = [
     {

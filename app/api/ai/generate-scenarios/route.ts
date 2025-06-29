@@ -30,7 +30,7 @@ export async function POST(request: Request) {
     const { clients, workers, tasks, currentWeights, constraints } = await request.json()
 
     const { object } = await generateObject({
-      model: groq("llama-3.1-70b-versatile"),
+      model: groq("llama3-8b-8192"),
       schema: ScenarioSchema,
       prompt: `
         You are an expert resource allocation strategist. Generate 3-4 distinct scenarios for resource allocation based on this data:

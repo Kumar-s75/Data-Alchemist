@@ -38,7 +38,7 @@ export async function POST(request: Request) {
     const { clients, workers, tasks } = await request.json()
 
     const { object } = await generateObject({
-      model: groq("llama-3.1-70b-versatile"),
+      model: groq("llama3-8b-8192"),
       schema: ValidationSchema,
       prompt: `
         You are an expert resource allocation analyst. Perform comprehensive validation on this dataset:

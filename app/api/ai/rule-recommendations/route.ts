@@ -30,7 +30,7 @@ export async function POST(request: Request) {
     const { clients, workers, tasks, existingRules } = await request.json()
 
     const { object } = await generateObject({
-      model: groq("llama-3.1-70b-versatile"),
+      model: groq("llama3-8b-8192"),
       schema: RuleRecommendationSchema,
       prompt: `
         Analyze this resource allocation data and recommend business rules based on patterns:

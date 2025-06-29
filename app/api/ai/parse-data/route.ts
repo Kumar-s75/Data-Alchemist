@@ -39,7 +39,7 @@ export async function POST(request: Request) {
     }
 
     const { object } = await generateObject({
-      model: groq("llama-3.1-70b-versatile"),
+      model: groq("llama3-8b-8192"),
       schema: DataMappingSchema,
       prompt: `
         You are an expert data analyst. I have uploaded a ${entityType} dataset with these column headers: ${headers.join(", ")}

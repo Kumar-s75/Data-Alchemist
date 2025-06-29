@@ -21,7 +21,7 @@ export async function POST(request: Request) {
     const { query, clients, workers, tasks } = await request.json()
 
     const { object } = await generateObject({
-      model: groq("llama-3.1-70b-versatile"),
+      model: groq("llama3-8b-8192"),
       schema: SearchSchema,
       prompt: `
         Convert this natural language query into structured search parameters: "${query}"
