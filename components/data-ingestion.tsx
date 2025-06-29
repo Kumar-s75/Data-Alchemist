@@ -30,7 +30,7 @@ const cardVariants = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.6, ease: "easeOut" },
+    transition: { duration: 0.6, ease: "easeInOut" },
   },
 }
 
@@ -43,6 +43,7 @@ const staggerContainer = {
     },
   },
 }
+
 
 export default function DataIngestion() {
   const { clients, workers, tasks, setClients, setWorkers, setTasks } = useData()
@@ -224,10 +225,16 @@ const generateSampleData = async () => {
       tasksResponse.text(),
     ])
 
-    const clientsData = parseCSV(clientsText)
-    const workersData = parseCSV(workersText)
-    const tasksData = parseCSV(tasksText)
+    const rawClientsData = parseCSV(clientsText)
+    const rawWorkersData = parseCSV(workersText)
+    const rawTasksData = parseCSV(tasksText)
 
+    // Apply AI parsing to normalize the sample data
+    const clientsData = await aiEnhancedParsing(rawClientsData, "clients")
+    const workersData = await aiEnhancedParsing(rawWorkersData, "workers")
+    const tasksData = await aiEnhancedParsing(rawTasksData, "tasks")
+
+    // Update state with normalized data
     setClients(clientsData)
     setWorkers(workersData)
     setTasks(tasksData)
@@ -236,6 +243,7 @@ const generateSampleData = async () => {
     console.error("Error loading sample data:", error)
   }
 }
+
 
 
   const entityConfigs = [
