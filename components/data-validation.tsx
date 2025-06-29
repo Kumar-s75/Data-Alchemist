@@ -146,7 +146,6 @@ export default function DataValidation() {
       }
     })
 
-    // ✅ FIXED SECTION
     clients.forEach((client) => {
       const requestedTaskIds = Array.isArray(client.RequestedTaskIDs)
         ? client.RequestedTaskIDs
@@ -169,8 +168,8 @@ export default function DataValidation() {
       })
     })
 
-    const allRequiredSkills = [...new Set(tasks.flatMap((task) => task.RequiredSkills))] || []
-    const allWorkerSkills = [...new Set(workers.flatMap((worker) => worker.Skills))] || []
+    const allRequiredSkills = [...new Set(tasks.flatMap((task) => Array.isArray(task.RequiredSkills) ? task.RequiredSkills : []))] || []
+    const allWorkerSkills = [...new Set(workers.flatMap((worker) => Array.isArray(worker.Skills) ? worker.Skills : []))] || []
 
     allRequiredSkills.forEach((skill) => {
       if (!allWorkerSkills.includes(skill)) {
@@ -199,15 +198,14 @@ export default function DataValidation() {
       }
     }
 
-    const tasksBySkills = tasks.reduce(
-      (acc, task) => {
-        const skillKey = task.RequiredSkills.sort().join(",")
-        if (!acc[skillKey]) acc[skillKey] = []
-        acc[skillKey].push(task.TaskID)
-        return acc
-      },
-      {} as Record<string, string[]>,
-    )
+    const tasksBySkills = tasks.reduce((acc, task) => {
+      if (!Array.isArray(task.RequiredSkills)) return acc
+
+      const skillKey = task.RequiredSkills.sort().join(",")
+      if (!acc[skillKey]) acc[skillKey] = []
+      acc[skillKey].push(task.TaskID)
+      return acc
+    }, {} as Record<string, string[]>)
 
     Object.entries(tasksBySkills).forEach(([skills, taskIds]) => {
       if (taskIds.length > 1) {
@@ -316,9 +314,7 @@ export default function DataValidation() {
               {suggestions.map((suggestion) => (
                 <Alert
                   key={suggestion.id}
-                  className={
-                    suggestion.severity === "warning" ? "border-yellow-200 bg-yellow-50" : "border-blue-200 bg-blue-50"
-                  }
+                  className={suggestion.severity === "warning" ? "border-yellow-200 bg-yellow-50" : "border-blue-200 bg-blue-50"}
                 >
                   <Lightbulb className="h-4 w-4" />
                   <AlertDescription>
@@ -370,26 +366,22 @@ export default function DataValidation() {
             </CardContent>
           </Card>
 
-          {/* Add AI Correction Panel */}
           <AICorrectionPanel />
         </>
       )}
 
-      {validationErrors.length === 0 &&
-        !isValidating &&
-        (clients.length > 0 || workers.length > 0 || tasks.length > 0) && (
-          <Card>
-            <CardContent className="pt-6">
-              <div className="text-center">
-                <CheckCircle className="h-12 w-12 text-green-500 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-green-700 mb-2">All Validations Passed!</h3>
-                <p className="text-gray-600">Your data looks clean and ready for rule configuration.</p>
-              </div>
-            </CardContent>
-          </Card>
-        )}
+      {validationErrors.length === 0 && !isValidating && (clients.length > 0 || workers.length > 0 || tasks.length > 0) && (
+        <Card>
+          <CardContent className="pt-6">
+            <div className="text-center">
+              <CheckCircle className="h-12 w-12 text-green-500 mx-auto mb-4" />
+              <h3 className="text-lg font-semibold text-green-700 mb-2">All Validations Passed!</h3>
+              <p className="text-gray-600">Your data looks clean and ready for rule configuration.</p>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
-      {/* Add Natural Language Modifier */}
       {(clients.length > 0 || workers.length > 0 || tasks.length > 0) && <NaturalLanguageModifier />}
     </div>
   )
